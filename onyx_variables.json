@@ -1,0 +1,96 @@
+{
+    "variables": [
+        {
+            "actual_name": "--toolbar-width",
+            "replace_value": "%%TOOLBAR_WIDTH%%",
+            "default_value": "75vw",
+            "description": "Width of the toolbar",
+            "data_type": "number",
+            "max": 100,
+            "min": 1,
+            "step": 1,
+            "unit": "vw",
+            "title": "Toolbar Width"
+        },
+        {
+            "actual_name": "--toolbar-opacity",
+            "replace_value": "%%TOOLBAR-OPACITY%%",
+            "default_value": "0.6",
+            "description": "Opacity of the toolbar",
+            "data_type": "number",
+            "max": 1,
+            "min": 0,
+            "step": 0.1,
+            "unit": null,
+            "title": "Toolbar Opacity"
+        },
+        {
+            "actual_name": "--toolbar-border",
+            "replace_value": "%%TOOLBAR-BORDER%%",
+            "default_value": "1px solid rgba(255, 255, 255, 0.5)",
+            "description": "Border style of the toolbar",
+            "data_type": "border",
+            "title": "Toolbar Border"
+        },
+        {
+            "actual_name": "--toolbar-border-radius",
+            "replace_value": "%%TOOLBAR-BORDER-RADIUS%%",
+            "default_value": "10px",
+            "description": "Border radius of the toolbar",
+            "data_type": "number",
+            "max": 50,
+            "min": 0,
+            "step": 1,
+            "unit": "px",
+            "title": "Toolbar Border Radius"
+        },
+        {
+            "actual_name": "--toolbar-item-opacity",
+            "replace_value": "%%TOOLBAR-ITEM-OPACITY%%;",
+            "default_value": "0.8",
+            "description": "Opacity of the toolbar items",
+            "data_type": "number",
+            "max": 1,
+            "min": 0,
+            "step": 0.1,
+            "unit": null,
+            "title": "Toolbar Item Opacity"
+        },
+        {
+            "actual_name": "--scrollbar-width",
+            "replace_value": "%%SCROLLBAR-WIDTH%%",
+            "default_value": "8px",
+            "description": "Width of the scrollbar",
+            "data_type": "number",
+            "max": 20,
+            "min": 0,
+            "step": 1,
+            "unit": "px",
+            "title": "Scrollbar Width"
+        },
+        {
+            "actual_name": "--scrollbar-track",
+            "replace_value": "%%SCROLLBAR-TRACK%%",
+            "default_value": "rgba(20, 20, 20, 0.3)",
+            "description": "Background color of the scrollbar track",
+            "data_type": "color_rgba",
+            "title": "Scrollbar Track Color"
+        },
+        {
+            "actual_name": "--scrollbar-thumb",
+            "replace_value": "%%SCROLLBAR-THUMB%%",
+            "default_value": "rgba(255, 255, 255, 0.2)",
+            "description": "Color of the scrollbar thumb",
+            "data_type": "color_rgba",
+            "title": "Scrollbar Thumb Color"
+        },
+        {
+            "actual_name": "--scrollbar-thumb-hover",
+            "replace_value": "%%SCROLLBAR-THUMB-HOVER%%",
+            "default_value": "rgba(255, 255, 255, 0.3)",
+            "description": "Color of the scrollbar thumb on hover",
+            "data_type": "color_rgba",
+            "title": "Scrollbar Thumb Hover Color"
+        }
+    ]
+}

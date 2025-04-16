@@ -1,0 +1,701 @@
+<!--
+
+If you would like to use this script, please leave credits !
+Made by 1Developpeur (on Github)
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onyx Toolbar Customizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            background-color: #121212;
+            color: #e0e0e0;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .config-section {
+            background-color: #1e1e1e;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 1s;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #bb86fc;
+            animation: fadeIn 1s;
+        }
+
+        input[type="range"] {
+            width: 75%;
+            -webkit-appearance: none;
+            background: #3a3a3a;
+            border-radius: 12px;
+            height: 12px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #bb86fc;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #bb86fc;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        input[type="range"]:hover::-webkit-slider-thumb {
+            background: #ffffff;
+        }
+
+        input[type="range"]:hover::-moz-range-thumb {
+            background: #3700b3;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            border: 2px solid #444;
+            border-radius: 12px;
+            background-color: #2e2e2e;
+            color: #e0e0e0;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #bb86fc;
+            outline: none;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .value-display {
+            background-color: #2e2e2e;
+            padding: 15px 20px;
+            border-radius: 10px;
+            min-width: 120px;
+            text-align: center;
+            color: #e0e0e0;
+            animation: fadeIn 1s;
+        }
+
+        button {
+            background-color: #bb86fc;
+            color: white;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 30px;
+            animation: fadeInUp 1s;
+        }
+
+        button:hover {
+            background-color: #3700b3;
+            transform: scale(1.05);
+        }
+
+        .color-preview {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            border: 2px solid #666;
+            animation: fadeIn 1s;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #bb86fc;
+            animation: fadeIn 1s;
+        }
+
+        .section-title {
+            color: #bb86fc;
+            border-bottom: 2px solid #444;
+            padding-bottom: 15px;
+            margin-top: 40px;
+            animation: fadeIn 1s;
+        }
+
+        .border-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .border-preview {
+            height: 60px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2e2e2e;
+            color: #e0e0e0;
+            animation: fadeIn 1s;
+        }
+
+        select {
+            padding: 15px;
+            border-radius: 12px;
+            background-color: #2e2e2e;
+            color: white;
+            border: 2px solid #444;
+            animation: fadeIn 1s;
+            
+        }
+
+        .color-picker-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .color-input {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            background-color: #2e2e2e;
+            color: white;
+            border: 2px solid #444;
+            animation: fadeIn 1s;
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+        }
+
+        .color-picker-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            border: 2px solid #666;
+            cursor: pointer;
+            animation: fadeIn 1s;
+        }
+
+        .color-picker-popup {
+            position: absolute;
+            z-index: 100;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            display: none;
+            width: 240px;
+        }
+
+        .opacity-control {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .opacity-slider {
+            flex: 1;
+        }
+
+        .opacity-value {
+            width: 60px;
+            text-align: center;
+            color: #e0e0e0;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="config-section">
+        <h1>Onyx Toolbar Customizer</h1>
+        <div id="controls" class="loading">Loading configuration...</div>
+        <button id="downloadBtn" disabled onclick="downloadTheme()">Download Custom Theme</button>
+    </div>
+
+    <script>
+
+        // If you would like to use this script, please leave credits !
+        // Made by 1Developpeur (on Github)
+
+        let variables = [];
+        let yamlTemplate = '';
+        let currentValues = {};
+
+        // Border styles
+        const borderStyles = [
+            'solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'inset', 'outset', 'none', 'hidden'
+        ];
+
+        // Load JSON and YAML files
+        Promise.all([
+            fetch('onyx_variables.json').then(res => res.json()),
+            fetch('onyx_toolbar_default.yaml').then(res => res.text())
+        ])
+        .then(([vars, yaml]) => {
+            variables = vars.variables;
+            yamlTemplate = yaml;
+            generateControls();
+            document.getElementById('downloadBtn').disabled = false;
+        })
+        .catch(err => {
+            console.error('Error loading files:', err);
+            document.getElementById('controls').innerHTML =
+                '<p style="color: #ff4444;">Error loading configuration files. Please ensure both files are in the same directory.</p>';
+        });
+
+        function createColorPicker(defaultColor, replaceValue) {
+            const container = document.createElement('div');
+            container.className = 'color-picker-container';
+            container.style.marginBottom = '16px';
+            // Create color input
+            const colorInput = document.createElement('input');
+            colorInput.type = 'text';
+            colorInput.className = 'color-input';
+            colorInput.value = defaultColor;
+            colorInput.dataset.replaceValue = replaceValue;
+
+            // Create color picker button
+            const pickerButton = document.createElement('div');
+            pickerButton.className = 'color-picker-button';
+            pickerButton.style.backgroundColor = defaultColor;
+
+            // Create color picker popup
+            const pickerPopup = document.createElement('div');
+            pickerPopup.className = 'color-picker-popup';
+
+            // Create the actual color picker input
+            const colorPicker = document.createElement('input');
+            colorPicker.type = 'color';
+            colorPicker.value = '#FFFFFF';
+
+            // Create opacity control
+            const opacityControl = document.createElement('div');
+            opacityControl.className = 'opacity-control';
+
+            const opacityLabel = document.createElement('span');
+            opacityLabel.textContent = 'Opacity:';
+
+            const opacitySlider = document.createElement('input');
+            opacitySlider.type = 'range';
+            opacitySlider.className = 'opacity-slider';
+            opacitySlider.min = 0;
+            opacitySlider.max = 100;
+            opacitySlider.value = 100;
+
+            const opacityValue = document.createElement('span');
+            opacityValue.className = 'opacity-value';
+            opacityValue.textContent = '100%';
+
+            opacityControl.appendChild(opacityLabel);
+            opacityControl.appendChild(opacitySlider);
+            opacityControl.appendChild(opacityValue);
+
+            // Parse initial color
+            let currentColor = '#FFFFFF';
+            let currentOpacity = 1;
+
+            // Try to parse the default color
+            try {
+                if (defaultColor.startsWith('rgba')) {
+                    const rgba = defaultColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                    if (rgba) {
+                        const r = parseInt(rgba[1]);
+                        const g = parseInt(rgba[2]);
+                        const b = parseInt(rgba[3]);
+                        currentOpacity = rgba[4] ? parseFloat(rgba[4]) : 1;
+                        currentColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                        colorPicker.value = currentColor;
+                        opacitySlider.value = Math.round(currentOpacity * 100);
+                        opacityValue.textContent = `${opacitySlider.value}%`;
+                    }
+                } else if (defaultColor.startsWith('rgb')) {
+                    const rgb = defaultColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                    if (rgb) {
+                        const r = parseInt(rgb[1]);
+                        const g = parseInt(rgb[2]);
+                        const b = parseInt(rgb[3]);
+                        currentColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                        colorPicker.value = currentColor;
+                    }
+                } else if (defaultColor.startsWith('#')) {
+                    currentColor = defaultColor;
+                    colorPicker.value = currentColor;
+                }
+            } catch (e) {
+                console.error('Error parsing color:', e);
+            }
+
+            // Update functions
+            function updateColor() {
+                const hexColor = colorPicker.value;
+                const opacity = opacitySlider.value / 100;
+
+                if (opacity < 1) {
+                    const rgb = hexToRgb(hexColor);
+                    colorInput.value = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+                } else {
+                    colorInput.value = hexColor;
+                }
+
+                pickerButton.style.backgroundColor = colorInput.value;
+                currentValues[replaceValue] = colorInput.value;
+            }
+
+            function hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : { r: 255, g: 255, b: 255 };
+            }
+
+            // Event listeners
+            colorPicker.addEventListener('input', updateColor);
+            opacitySlider.addEventListener('input', function() {
+                opacityValue.textContent = `${this.value}%`;
+                updateColor();
+            });
+
+            colorInput.addEventListener('change', function() {
+                try {
+                    // Validate the color input
+                    const testDiv = document.createElement('div');
+                    testDiv.style.color = this.value;
+                    pickerButton.style.backgroundColor = this.value;
+                    currentValues[replaceValue] = this.value;
+
+                    // Try to parse the new color for the picker
+                    if (this.value.startsWith('rgba')) {
+                        const rgba = this.value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                        if (rgba) {
+                            const r = parseInt(rgba[1]);
+                            const g = parseInt(rgba[2]);
+                            const b = parseInt(rgba[3]);
+                            currentOpacity = rgba[4] ? parseFloat(rgba[4]) : 1;
+                            currentColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                            colorPicker.value = currentColor;
+                            opacitySlider.value = Math.round(currentOpacity * 100);
+                            opacityValue.textContent = `${opacitySlider.value}%`;
+                        }
+                    } else if (this.value.startsWith('rgb')) {
+                        const rgb = this.value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                        if (rgb) {
+                            const r = parseInt(rgb[1]);
+                            const g = parseInt(rgb[2]);
+                            const b = parseInt(rgb[3]);
+                            currentColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                            colorPicker.value = currentColor;
+                            opacitySlider.value = 100;
+                            opacityValue.textContent = '100%';
+                        }
+                    } else if (this.value.startsWith('#')) {
+                        colorPicker.value = this.value;
+                        opacitySlider.value = 100;
+                        opacityValue.textContent = '100%';
+                    }
+                } catch (e) {
+                    console.error('Invalid color:', this.value);
+                }
+            });
+
+            // Toggle picker popup
+            pickerButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                pickerPopup.style.display = pickerPopup.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Close picker when clicking outside
+            document.addEventListener('click', function() {
+                pickerPopup.style.display = 'none';
+            });
+
+            // Add elements to popup
+            pickerPopup.appendChild(colorPicker);
+            pickerPopup.appendChild(opacityControl);
+
+            // Add elements to container
+            container.appendChild(colorInput);
+
+            const pickerWrapper = document.createElement('div');
+            pickerWrapper.className = 'color-picker-wrapper';
+            pickerWrapper.appendChild(pickerButton);
+            pickerWrapper.appendChild(pickerPopup);
+            container.appendChild(pickerWrapper);
+
+            // Set initial value
+            currentValues[replaceValue] = defaultColor;
+
+            return container;
+        }
+
+        function createControl(variable) {
+            const container = document.createElement('div');
+            container.className = 'form-group';
+
+            const label = document.createElement('label');
+            label.textContent = variable.title;
+            label.title = variable.description;
+
+            container.appendChild(label);
+
+            // Store initial value
+            currentValues[variable.replace_value] = variable.default_value;
+
+            switch(variable.data_type) {
+                case 'number':
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+
+                    const rangeInput = document.createElement('input');
+                    rangeInput.type = 'range';
+                    rangeInput.min = variable.min;
+                    rangeInput.max = variable.max;
+                    rangeInput.step = variable.step || 1;
+                    rangeInput.value = variable.default_value;
+                    rangeInput.dataset.replaceValue = variable.replace_value;
+
+
+
+                    const valueDisplay = document.createElement('div');
+                    valueDisplay.className = 'value-display';
+                    valueDisplay.textContent = `${variable.default_value}`;
+
+                    const updateHandler = (e) => {
+                        const value = e.target.value;
+                        const replaceValue = e.target.dataset.replaceValue;
+                        currentValues[replaceValue] = `${value}${variable.unit || ''}`;
+
+                        rangeInput.value = value;
+                        valueDisplay.textContent = `${value}${variable.unit || ''}`;
+                    };
+
+                    rangeInput.addEventListener('input', updateHandler);
+
+                    inputGroup.appendChild(rangeInput);
+                    inputGroup.appendChild(valueDisplay);
+                    container.appendChild(inputGroup);
+                    break;
+
+                case 'color_rgba':
+                    container.appendChild(createColorPicker(variable.default_value, variable.replace_value));
+                    break;
+
+                case 'border':
+                    // Border width control
+                    const borderWidthGroup = document.createElement('div');
+                    borderWidthGroup.className = 'input-group';
+
+                    const borderWidthInput = document.createElement('input');
+                    borderWidthInput.type = 'range';
+                    borderWidthInput.min = 0;
+                    borderWidthInput.max = 10;
+                    borderWidthInput.step = 1;
+                    borderWidthInput.value = parseInt(variable.default_value) || 1;
+                    borderWidthInput.dataset.borderPart = 'width';
+                    borderWidthInput.dataset.replaceValue = variable.replace_value;
+
+                    const borderWidthDisplay = document.createElement('div');
+                    borderWidthDisplay.className = 'value-display';
+                    borderWidthDisplay.textContent = `${parseInt(variable.default_value) || 1}px`;
+
+                    // Border style control
+                    const borderStyleSelect = document.createElement('select');
+                    borderStyleSelect.dataset.borderPart = 'style';
+                    borderStyleSelect.dataset.replaceValue = variable.replace_value;
+                    borderStyleSelect.style.marginBottom = '16px';
+
+                    // Extract style from default value
+                    let defaultStyle = 'solid';
+                    const styleMatch = variable.default_value.match(/(solid|dashed|dotted|double|groove|ridge|inset|outset|none|hidden)/);
+                    if (styleMatch) defaultStyle = styleMatch[0];
+
+                    borderStyles.forEach(style => {
+                        const option = document.createElement('option');
+                        option.value = style;
+                        option.textContent = style;
+                        option.selected = style === defaultStyle;
+                        borderStyleSelect.appendChild(option);
+                    });
+
+                    // Border color control
+                    let defaultColor = 'rgba(255, 255, 255, 0.5)';
+                    const colorMatch = variable.default_value.match(/(rgba?\([^)]+\)|#[0-9a-fA-F]{3,6}|\w+)/);
+                    if (colorMatch) defaultColor = colorMatch[0];
+
+                    const borderColorControl = createColorPicker(defaultColor, 'border-color-temp');
+
+                    // Border preview
+                    const borderPreview = document.createElement('div');
+                    borderPreview.className = 'border-preview';
+                    borderPreview.textContent = 'Preview';
+                    updateBorderPreview(
+                        borderPreview,
+                        borderWidthInput.value,
+                        borderStyleSelect.value,
+                        defaultColor
+                    );
+
+                    // Update handler for all border controls
+                    const borderUpdateHandler = (e) => {
+                        const width = borderWidthInput.value;
+                        const style = borderStyleSelect.value;
+                        const color = borderColorControl.querySelector('.color-input').value;
+
+                        borderWidthDisplay.textContent = `${width}px`;
+
+                        // Update the preview
+                        updateBorderPreview(borderPreview, width, style, color);
+
+                        // Update the current value
+                        currentValues[variable.replace_value] = `${width}px ${style} ${color}`;
+                    };
+
+                    borderWidthInput.addEventListener('input', borderUpdateHandler);
+                    borderStyleSelect.addEventListener('change', borderUpdateHandler);
+
+                    borderColorControl.querySelector('.color-input').addEventListener('change', borderUpdateHandler);
+
+                    const borderWidthLabel = document.createElement('label');
+                    borderWidthLabel.textContent = 'Border Width';
+                    container.appendChild(borderWidthLabel);
+                    borderWidthGroup.appendChild(borderWidthInput);
+                    borderWidthGroup.appendChild(borderWidthDisplay);
+                    container.appendChild(borderWidthGroup);
+
+                    const borderStyleLabel = document.createElement('label');
+                    borderStyleLabel.textContent = 'Border Style';
+                    container.appendChild(borderStyleLabel);
+                    container.appendChild(borderStyleSelect);
+
+                    const borderColorLabel = document.createElement('label')
+                    borderColorLabel.textContent = 'Border Color'
+                    container.appendChild(borderColorLabel);
+                    container.appendChild(borderColorControl);
+
+                    const borderPreviewLabel = document.createElement('label')
+                    borderPreviewLabel.textContent = 'Border Preview'
+                    container.appendChild(borderPreviewLabel);
+                    container.appendChild(borderPreview);
+
+                    // Set initial value
+                    currentValues[variable.replace_value] = `${borderWidthInput.value}px ${borderStyleSelect.value} ${defaultColor}`;
+                    break;
+            }
+
+            return container;
+        }
+
+        function updateBorderPreview(element, width, style, color, radius) {
+            element.style.border = `${width}px ${style} ${color}`;
+        }
+
+        function generateControls() {
+            const controlsContainer = document.getElementById('controls');
+            controlsContainer.innerHTML = '';
+            controlsContainer.className = '';
+
+            // Group variables by category
+            const toolbarVars = variables.filter(v => v.actual_name.includes('--toolbar'));
+            const scrollbarVars = variables.filter(v => v.actual_name.includes('--scrollbar'));
+
+            // Create toolbar section
+            const toolbarSection = document.createElement('div');
+            const toolbarTitle = document.createElement('h2');
+            toolbarTitle.className = 'section-title';
+            toolbarTitle.textContent = 'Toolbar Settings';
+            toolbarSection.appendChild(toolbarTitle);
+
+            toolbarVars.forEach(variable => {
+                toolbarSection.appendChild(createControl(variable));
+            });
+            controlsContainer.appendChild(toolbarSection);
+
+            // Create scrollbar section
+            const scrollbarSection = document.createElement('div');
+            const scrollbarTitle = document.createElement('h2');
+            scrollbarTitle.className = 'section-title';
+            scrollbarTitle.textContent = 'Scrollbar Settings';
+            scrollbarSection.appendChild(scrollbarTitle);
+
+            scrollbarVars.forEach(variable => {
+                scrollbarSection.appendChild(createControl(variable));
+            });
+            controlsContainer.appendChild(scrollbarSection);
+        }
+
+        function downloadTheme() {
+            let modifiedYaml = yamlTemplate;
+
+            // Replace all placeholders with current values
+            for (const [placeholder, value] of Object.entries(currentValues)) {
+                modifiedYaml = modifiedYaml.replaceAll(placeholder, value);
+            }
+
+            const blob = new Blob([modifiedYaml], { type: 'text/yaml' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'onyx_toolbar_custom.yaml';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

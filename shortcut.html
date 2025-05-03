@@ -213,6 +213,25 @@
             animation: fadeIn 0.5s;
         }
 
+        .icon-option-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .icon-option {
+            flex: 1;
+        }
+
+        .icon-preview {
+            width: 24px;
+            height: 24px;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+            object-fit: contain;
+            display: none;
+        }
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -234,6 +253,11 @@
             
             .card {
                 padding: 1.5rem;
+            }
+            
+            .icon-option-container {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
     </style>
@@ -264,63 +288,80 @@
             <div class="form-group">
                 <label for="iconSelect">Icon</label>
                 <select id="iconSelect">
-                    <option value="custom">Custom Icon (Enter below)</option>
-                    <option value="TiHome">Home (TiHome)</option>
-                    <option value="TiGlobe">Globe (TiGlobe)</option>
-                    <option value="TiSocialGithub">GitHub (TiSocialGithub)</option>
-                    <option value="TiSocialTwitter">Twitter (TiSocialTwitter)</option>
-                    <option value="TiSocialYoutube">YouTube (TiSocialYoutube)</option>
-                    <option value="TiSocialFacebook">Facebook (TiSocialFacebook)</option>
-                    <option value="TiSocialLinkedin">LinkedIn (TiSocialLinkedin)</option>
-                    <option value="TiSocialReddit">Reddit (TiSocialReddit)</option>
-                    <option value="TiSocialPinterest">Pinterest (TiSocialPinterest)</option>
-                    <option value="TiSocialInstagram">Instagram (TiSocialInstagram)</option>
-                    <option value="TiRss">RSS (TiRss)</option>
-                    <option value="TiMail">Mail (TiMail)</option>
-                    <option value="TiCalendar">Calendar (TiCalendar)</option>
-                    <option value="TiCog">Settings (TiCog)</option>
-                    <option value="TiStar">Star (TiStar)</option>
-                    <option value="TiBookmark">Bookmark (TiBookmark)</option>
-                    <option value="TiShoppingCart">Shopping Cart (TiShoppingCart)</option>
-                    <option value="TiCamera">Camera (TiCamera)</option>
-                    <option value="TiHeadphones">Headphones (TiHeadphones)</option>
-                    <option value="TiVideo">Video (TiVideo)</option>
-                    <option value="TiMusic">Music (TiMusic)</option>
-                    <option value="TiPalette">Palette (TiPalette)</option>
-                    <option value="TiChartBar">Statistics (TiChartBar)</option>
-                    <option value="TiLightbulb">Lightbulb (TiLightbulb)</option>
-                    <option value="TiFlag">Flag (TiFlag)</option>
-                    <option value="TiHeart">Heart (TiHeart)</option>
-                    <option value="TiThumbsUp">Thumbs Up (TiThumbsUp)</option>
-                    <option value="TiComment">Comment (TiComment)</option>
-                    <option value="TiLock">Lock (TiLock)</option>
-                    <option value="TiKey">Key (TiKey)</option>
-                    <option value="TiRocket">Rocket (TiRocket)</option>
-                    <option value="TiFlash">Flash (TiFlash)</option>
-                    <option value="TiCloud">Cloud (TiCloud)</option>
-                    <option value="TiDatabase">Database (TiDatabase)</option>
-                    <option value="TiCode">Code (TiCode)</option>
-                    <option value="TiWand">Magic Wand (TiWand)</option>
-                    <option value="TiBeaker">Beaker (TiBeaker)</option>
-                    <option value="TiBriefcase">Briefcase (TiBriefcase)</option>
-                    <option value="TiMedicalCross">Medical (TiMedicalCross)</option>
-                    <option value="TiMap">Map (TiMap)</option>
-                    <option value="TiCompass">Compass (TiCompass)</option>
-                    <option value="TiPlane">Plane (TiPlane)</option>
-                    <option value="TiCar">Car (TiCar)</option>
-                    <option value="TiBatteryFull">Battery (TiBatteryFull)</option>
-                    <option value="TiPrinter">Printer (TiPrinter)</option>
-                    <option value="TiDesktop">Desktop (TiDesktop)</option>
-                    <option value="TiLaptop">Laptop (TiLaptop)</option>
-                    <option value="TiMobile">Mobile (TiMobile)</option>
-                    <option value="TiTablet">Tablet (TiTablet)</option>
-                    <option value="TiGameController">Game Controller (TiGameController)</option>
-                    <option value="TiCalculator">Calculator (TiCalculator)</option>
+                    <option value="predefined">Predefined Icon</option>
+                    <option value="custom">Custom Icon Name</option>
+                    <option value="url">Custom Icon URL</option>
                 </select>
-                <div class="custom-icon-input" id="customIconContainer">
-                    <label for="customIcon">Custom Icon Name</label>
-                    <input type="text" id="customIcon" placeholder="e.g., TiWeatherSunny" autocomplete="off">
-                    <small>Enter the exact icon name from the icon library</small>
+                
+                <div class="icon-option-container">
+                    <div class="icon-option" id="predefinedIconOption">
+                        <select id="predefinedIconSelect">
+                            <option value="TiHome">Home (TiHome)</option>
+                            <option value="TiGlobe">Globe (TiGlobe)</option>
+                            <option value="TiSocialGithub">GitHub (TiSocialGithub)</option>
+                            <option value="TiSocialTwitter">Twitter (TiSocialTwitter)</option>
+                            <option value="TiSocialYoutube">YouTube (TiSocialYoutube)</option>
+                            <option value="TiSocialFacebook">Facebook (TiSocialFacebook)</option>
+                            <option value="TiSocialLinkedin">LinkedIn (TiSocialLinkedin)</option>
+                            <option value="TiSocialReddit">Reddit (TiSocialReddit)</option>
+                            <option value="TiSocialPinterest">Pinterest (TiSocialPinterest)</option>
+                            <option value="TiSocialInstagram">Instagram (TiSocialInstagram)</option>
+                            <option value="TiRss">RSS (TiRss)</option>
+                            <option value="TiMail">Mail (TiMail)</option>
+                            <option value="TiCalendar">Calendar (TiCalendar)</option>
+                            <option value="TiCog">Settings (TiCog)</option>
+                            <option value="TiStar">Star (TiStar)</option>
+                            <option value="TiBookmark">Bookmark (TiBookmark)</option>
+                            <option value="TiShoppingCart">Shopping Cart (TiShoppingCart)</option>
+                            <option value="TiCamera">Camera (TiCamera)</option>
+                            <option value="TiHeadphones">Headphones (TiHeadphones)</option>
+                            <option value="TiVideo">Video (TiVideo)</option>
+                            <option value="TiMusic">Music (TiMusic)</option>
+                            <option value="TiPalette">Palette (TiPalette)</option>
+                            <option value="TiChartBar">Statistics (TiChartBar)</option>
+                            <option value="TiLightbulb">Lightbulb (TiLightbulb)</option>
+                            <option value="TiFlag">Flag (TiFlag)</option>
+                            <option value="TiHeart">Heart (TiHeart)</option>
+                            <option value="TiThumbsUp">Thumbs Up (TiThumbsUp)</option>
+                            <option value="TiComment">Comment (TiComment)</option>
+                            <option value="TiLock">Lock (TiLock)</option>
+                            <option value="TiKey">Key (TiKey)</option>
+                            <option value="TiRocket">Rocket (TiRocket)</option>
+                            <option value="TiFlash">Flash (TiFlash)</option>
+                            <option value="TiCloud">Cloud (TiCloud)</option>
+                            <option value="TiDatabase">Database (TiDatabase)</option>
+                            <option value="TiCode">Code (TiCode)</option>
+                            <option value="TiWand">Magic Wand (TiWand)</option>
+                            <option value="TiBeaker">Beaker (TiBeaker)</option>
+                            <option value="TiBriefcase">Briefcase (TiBriefcase)</option>
+                            <option value="TiMedicalCross">Medical (TiMedicalCross)</option>
+                            <option value="TiMap">Map (TiMap)</option>
+                            <option value="TiCompass">Compass (TiCompass)</option>
+                            <option value="TiPlane">Plane (TiPlane)</option>
+                            <option value="TiCar">Car (TiCar)</option>
+                            <option value="TiBatteryFull">Battery (TiBatteryFull)</option>
+                            <option value="TiPrinter">Printer (TiPrinter)</option>
+                            <option value="TiDesktop">Desktop (TiDesktop)</option>
+                            <option value="TiLaptop">Laptop (TiLaptop)</option>
+                            <option value="TiMobile">Mobile (TiMobile)</option>
+                            <option value="TiTablet">Tablet (TiTablet)</option>
+                            <option value="TiGameController">Game Controller (TiGameController)</option>
+                            <option value="TiCalculator">Calculator (TiCalculator)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="icon-option hidden" id="customIconOption">
+                        <label for="customIcon">Custom Icon Name</label>
+                        <input type="text" id="customIcon" placeholder="e.g., TiWeatherSunny" autocomplete="off">
+                        <small>Enter the exact icon name from the icon library</small>
+                    </div>
+                    
+                    <div class="icon-option hidden" id="urlIconOption">
+                        <label for="iconUrl">Icon URL</label>
+                        <input type="text" id="iconUrl" placeholder="e.g., https://google.com/favicon.ico" autocomplete="off">
+                        <img id="iconPreview" class="icon-preview" alt="Icon preview">
+                        <small>Enter URL of the icon image</small>
+                    </div>
                 </div>
             </div>
             
@@ -371,18 +412,35 @@
             }
         }
 
+        // Icon selection logic
         const iconSelect = document.getElementById('iconSelect');
-        const customIconContainer = document.getElementById('customIconContainer');
-        const customIconInput = document.getElementById('customIcon');
-        const websiteName = document.getElementById('websiteName');
+        const predefinedIconOption = document.getElementById('predefinedIconOption');
+        const customIconOption = document.getElementById('customIconOption');
+        const urlIconOption = document.getElementById('urlIconOption');
+        const iconUrlInput = document.getElementById('iconUrl');
         const iconPreview = document.getElementById('iconPreview');
-        const previewText = document.getElementById('previewText');
 
         iconSelect.addEventListener('change', function() {
-            if (this.value === 'custom') {
-                customIconContainer.classList.remove('hidden');
+            predefinedIconOption.classList.add('hidden');
+            customIconOption.classList.add('hidden');
+            urlIconOption.classList.add('hidden');
+            
+            if (this.value === 'predefined') {
+                predefinedIconOption.classList.remove('hidden');
+            } else if (this.value === 'custom') {
+                customIconOption.classList.remove('hidden');
+            } else if (this.value === 'url') {
+                urlIconOption.classList.remove('hidden');
+            }
+        });
+
+        // Show preview of URL icon
+        iconUrlInput.addEventListener('input', function() {
+            if (this.value) {
+                iconPreview.src = this.value;
+                iconPreview.style.display = 'block';
             } else {
-                customIconContainer.classList.add('hidden');
+                iconPreview.style.display = 'none';
             }
         });
 
@@ -406,14 +464,21 @@
             }
             
             let icon;
-            if (iconType === 'custom') {
+            if (iconType === 'predefined') {
+                icon = document.getElementById('predefinedIconSelect').value;
+            } else if (iconType === 'custom') {
                 icon = document.getElementById('customIcon').value.trim();
                 if (!icon) {
                     showAlert('Please enter a custom icon name');
                     return;
                 }
-            } else {
-                icon = iconType;
+            } else if (iconType === 'url') {
+                const iconUrl = document.getElementById('iconUrl').value.trim();
+                if (!iconUrl) {
+                    showAlert('Please enter an icon URL');
+                    return;
+                }
+                icon = `Image({ url: "${iconUrl}" })`;
             }
             
             let formattedUrl = url;
@@ -422,7 +487,7 @@
             }
             
             const pluginCode = `id: '@ShortcutBuilder/website-shortcut-${name.toLowerCase().replace(/\s+/g, '-')}'
-icon: '${icon}'
+icon: ${iconType === 'url' ? icon : `'${icon}'`}
 target: '@seelen/fancy-toolbar'
 plugin:
   type: text

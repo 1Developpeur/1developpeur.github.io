@@ -232,6 +232,22 @@
             display: none;
         }
 
+        .favicon-loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-top: 0.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -291,6 +307,7 @@
                     <option value="predefined">Predefined Icon</option>
                     <option value="custom">Custom Icon Name</option>
                     <option value="url">Custom Icon URL</option>
+                    <option value="favicon">Website Favicon</option>
                 </select>
                 
                 <div class="icon-option-container">
@@ -362,6 +379,16 @@
                         <img id="iconPreview" class="icon-preview" alt="Icon preview">
                         <small>Enter URL of the icon image</small>
                     </div>
+                    
+                    <div class="icon-option hidden" id="faviconOption">
+                        <div id="faviconInfo">
+                            <p>Will use the favicon from the website URL</p>
+                            <div id="faviconPreviewContainer">
+                                <div id="faviconLoading" class="favicon-loading hidden"></div>
+                                <img id="faviconPreview" class="icon-preview" alt="Favicon preview">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -412,18 +439,22 @@
             }
         }
 
-        // Icon selection logic
         const iconSelect = document.getElementById('iconSelect');
         const predefinedIconOption = document.getElementById('predefinedIconOption');
         const customIconOption = document.getElementById('customIconOption');
         const urlIconOption = document.getElementById('urlIconOption');
+        const faviconOption = document.getElementById('faviconOption');
         const iconUrlInput = document.getElementById('iconUrl');
         const iconPreview = document.getElementById('iconPreview');
+        const websiteUrlInput = document.getElementById('websiteUrl');
+        const faviconPreview = document.getElementById('faviconPreview');
+        const faviconLoading = document.getElementById('faviconLoading');
 
         iconSelect.addEventListener('change', function() {
             predefinedIconOption.classList.add('hidden');
             customIconOption.classList.add('hidden');
             urlIconOption.classList.add('hidden');
+            faviconOption.classList.add('hidden');
             
             if (this.value === 'predefined') {
                 predefinedIconOption.classList.remove('hidden');
@@ -431,10 +462,12 @@
                 customIconOption.classList.remove('hidden');
             } else if (this.value === 'url') {
                 urlIconOption.classList.remove('hidden');
+            } else if (this.value === 'favicon') {
+                faviconOption.classList.remove('hidden');
+                updateFaviconPreview();
             }
         });
 
-        // Show preview of URL icon
         iconUrlInput.addEventListener('input', function() {
             if (this.value) {
                 iconPreview.src = this.value;
@@ -443,6 +476,91 @@
                 iconPreview.style.display = 'none';
             }
         });
+
+        websiteUrlInput.addEventListener('input', function() {
+            if (iconSelect.value === 'favicon') {
+                updateFaviconPreview();
+            }
+        });
+
+        function updateFaviconPreview() {
+            const url = websiteUrlInput.value.trim();
+            if (!url) {
+                faviconPreview.style.display = 'none';
+                return;
+            }
+
+            faviconPreview.style.display = 'none';
+            faviconLoading.classList.remove('hidden');
+
+            getFavicon(url)
+                .then(faviconUrl => {
+                    if (daviconUrl) {
+                        faviconPreview.src = daviconUrl;
+                        faviconPreview.style.display = 'block';
+                    } else {
+                        const domain = extractDomain(url);
+                        if (domain) {
+                            const fallbackUrl = `https://www.google.com/s2/favicons?domain=${domain}`;
+                            faviconPreview.src = fallbackUrl;
+                            faviconPreview.style.display = 'block';
+                        }
+                    }
+                })
+                .catch(() => {
+                    const domain = extractDomain(url);
+                    if (domain) {
+                        const fallbackUrl = `https://www.google.com/s2/favicons?domain=${domain}`;
+                        faviconPreview.src = fallbackUrl;
+                        faviconPreview.style.display = 'block';
+                    }
+                })
+                .finally(() => {
+                    faviconLoading.classList.add('hidden');
+                });
+        }
+
+        function extractDomain(url) {
+            try {
+                const domain = new URL(url.startsWith('http') ? url : `https://${url}`).hostname;
+                return domain.startsWith('www.') ? domain.substring(4) : domain;
+            } catch {
+                return null;
+            }
+        }
+
+        async function getFavicon(url) {
+            if (!url) return null;
+            
+            try {
+                const domain = extractDomain(url);
+                if (!domain) return null;
+                
+                const faviconUrl = `https://${domain}/favicon.ico`;
+                const response = await fetch(faviconUrl, { method: 'HEAD', mode: 'no-cors' });
+                if (response.ok || response.type === 'opaque') {
+                    return faviconUrl;
+                }
+                
+                const htmlUrl = url.startsWith('http') ? url : `https://${url}`;
+                const htmlResponse = await fetch(htmlUrl, { mode: 'cors' });
+                if (!htmlResponse.ok) return null;
+                
+                const html = await htmlResponse.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                const iconLink = doc.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+                if (iconLink && iconLink.href) {
+                    return new URL(iconLink.href, htmlUrl).href;
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error fetching favicon:', error);
+                return null;
+            }
+        }
 
         document.getElementById('generateBtn').addEventListener('click', function() {
             this.classList.add('animate__pulse');
@@ -479,6 +597,13 @@
                     return;
                 }
                 icon = `Image({ url: "${iconUrl}" })`;
+            } else if (iconType === 'favicon') {
+                const domain = extractDomain(url);
+                if (!domain) {
+                    showAlert('Please enter a valid website URL to use its favicon');
+                    return;
+                }
+                icon = `Image({ url: \`https://www.google.com/s2/favicons?domain=${domain}\` })`;
             }
             
             let formattedUrl = url;
@@ -487,7 +612,7 @@
             }
             
             const pluginCode = `id: '@ShortcutBuilder/website-shortcut-${name.toLowerCase().replace(/\s+/g, '-')}'
-icon: ${iconType === 'url' ? icon : `'${icon}'`}
+icon: ${iconType === 'url' || iconType === 'favicon' ? icon : `'${icon}'`}
 target: '@seelen/fancy-toolbar'
 plugin:
   type: text

@@ -1,62 +1,227 @@
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            background-color: #161616;
-            color:aliceblue;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        h1 {
-            position: absolute;
-            text-align: center;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%) translateY(-150%);
-            font-size: 100px;
-            width: 100%;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>LED Control</title>
+  <style>
+    :root { --bg: #0f1115; --card: #1d1f25; --text: #eee; --accent: #fff; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+    .container { transform: translateZ(5px) rotateX(10deg) rotateY(10deg); background: var(--card); padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; gap: 20px; transition: all 0.3s ease; }
+    .container:hover { transform: translateZ(0) rotateX(0) rotateY(0) scale(1.025);}
 
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-size: 12px;
-        }
+    /* Color Wheel */
+    .wheel-container { position: relative; width: 250px; height: 250px; transition: all 0.3s ease; }
+    .wheel-container:hover { transform: scale(1.025); }
+    .wheel-container:active { transform: scale(0.975); }
+    canvas { width: 100%; height: 100%; border-radius: 50%; cursor: crosshair; touch-action: none; }
+    .cursor { position: absolute; width: 20px; height: 20px; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); pointer-events: none; transform: translate(-50%, -50%); top: 50%; left: 50%; }
 
-        button {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px 8px 16px;
-            font-weight: 700;
-            transition: all 1s;
-            box-shadow: 0 0 5px #ffffffc6;
-        }
+    /* Sliders */
+    .control-group { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    label { font-size: 0.75rem; letter-spacing: 1px; font-weight: 600; color: #888; text-transform: uppercase; display: flex; justify-content: space-between; }
+    
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 5px 0; transition: all 0.2s ease;}
+    input[type=range]:hover { transform: scale(1.025); }
+    input[type=range]:active { transform: scale(0.975); }
+    input[type=range]:focus { outline: none; }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 12px; cursor: pointer; background: #333; border-radius: 6px; }
+    input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: #fff; cursor: pointer; -webkit-appearance: none; margin-top: -6px; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+    
+    /* Custom gradients for tracks */
+    #opacitySlider::-webkit-slider-runnable-track { background: linear-gradient(to right, #000, #fff); }
+    #blueSlider::-webkit-slider-runnable-track { background: linear-gradient(to right, #fff, #ffaa00); }
 
-        button:hover {
-            transform: perspective(170px) rotateX(20deg) translateY(2px);
-            box-shadow: 0 0 15px rgb(0, 0, 0),
-                        0 0 25px rgb(255, 255, 255),
-                        0 0 50px rgb(0, 0, 0),
-                        0 0 100px rgb(255, 255, 255);
-        }
-
-        button:active, button:focus {
-            transform: perspective(170px) rotateX(36deg) translateY(5px);
-          }
-    </style>
+    /* Toggle */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; width: 100%; }
+    .switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #2196F3; }
+    input:checked + .slider:before { transform: translateX(16px); }
+    
+    .status { font-size: 0.8rem; color: #555; margin-top: 10px; }
+    .connected { color: #4CAF50; }
+  </style>
 </head>
 <body>
-    <h1>Under development.</h1>
-    <div class="container">
-        <h2>My online tools:</h2>
-        <button onclick="window.location = '/modern.html';">Onyx Toolbar Customization (SeelenUI)</button>
-        <br>
-        <button onclick="window.location = '/shortcut.html';">SeelenUI Website Shortcut Builder</button>
+  <div class="container">
+    <div class="wheel-container">
+      <canvas id="colorWheel"></canvas>
+      <div class="cursor" id="cursor"></div>
     </div>
+
+    <div class="control-group">
+      <label>Brightness <span id="brightVal">100%</span></label>
+      <input type="range" id="brightness" min="0" max="100" value="100">
+    </div>
+
+    <div class="control-group">
+      <div class="toggle-row">
+        <label style="margin:0">Less Blue Mode</label>
+        <label class="switch">
+          <input type="checkbox" id="blueToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <input type="range" id="blueSlider" min="0" max="100" value="0" disabled style="opacity: 0.5">
+      <div style="font-size: 0.7rem; color: #666;">Lowers blue channel to warm the light.</div>
+    </div>
+    
+    <div class="status" id="status">Connecting...</div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('colorWheel');
+    const ctx = canvas.getContext('2d');
+    const cursor = document.getElementById('cursor');
+    const brightSlider = document.getElementById('brightness');
+    const blueToggle = document.getElementById('blueToggle');
+    const blueSlider = document.getElementById('blueSlider');
+    const statusDiv = document.getElementById('status');
+    
+    let ws;
+    let currentRGB = {r:255, g:255, b:255};
+    let width, height, radius;
+
+    function initWheel() {
+      width = canvas.parentElement.clientWidth;
+      height = width;
+      canvas.width = width;
+      canvas.height = height;
+      radius = width / 2;
+      
+      const centerX = width / 2;
+      const centerY = height / 2;
+      
+      for (let angle = 0; angle < 360; angle++) {
+          const startAngle = (angle - 2) * Math.PI / 180;
+          const endAngle = (angle + 2) * Math.PI / 180;
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+          ctx.closePath();
+          const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+          gradient.addColorStop(0, 'white');
+          gradient.addColorStop(1, `hsl(${angle}, 100%, 50%)`);
+          ctx.fillStyle = gradient;
+          ctx.fill();
+      }
+    }
+    
+    initWheel();
+
+    function sendColor() {
+      if(!ws || ws.readyState !== WebSocket.OPEN) return;
+      
+      let r = currentRGB.r;
+      let g = currentRGB.g;
+      let b = currentRGB.b;
+
+      // Apply Brightness
+      const brightness = parseInt(brightSlider.value) / 100;
+      r *= brightness;
+      g *= brightness;
+      b *= brightness;
+
+      // Apply Less Blue
+      if(blueToggle.checked) {
+        const blueReduction = parseInt(blueSlider.value) / 100;
+        b *= (1 - blueReduction);
+      }
+
+      const data = new Uint8Array([Math.floor(r), Math.floor(g), Math.floor(b)]);
+      ws.send(data);
+    }
+
+    function updateColorFromWheel(x, y) {
+      const rect = canvas.getBoundingClientRect();
+      const dx = x - (rect.left + rect.width/2);
+      const dy = y - (rect.top + rect.height/2);
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const maxDist = rect.width/2;
+      
+      let cursorX = x;
+      let cursorY = y;
+      if(dist > maxDist) {
+        const angle = Math.atan2(dy, dx);
+        cursorX = (rect.left + rect.width/2) + Math.cos(angle) * maxDist;
+        cursorY = (rect.top + rect.height/2) + Math.sin(angle) * maxDist;
+      }
+      
+      cursor.style.left = (cursorX - rect.left) + 'px';
+      cursor.style.top = (cursorY - rect.top) + 'px';
+
+      const relX = (cursorX - rect.left) - width/2;
+      const relY = (cursorY - rect.top) - height/2;
+      const angle = (Math.atan2(relY, relX) * 180 / Math.PI + 360) % 360;
+      const sat = Math.min(Math.sqrt(relX*relX + relY*relY) / (width/2), 1);
+      
+      const h = angle;
+      const l = 0.5; 
+      const c = 1; 
+      const mx = c * (1 - Math.abs((h/60) % 2 - 1));
+      const m = l - c/2;
+      
+      let r1, g1, b1;
+      if(0<=h && h<60){ r1=c; g1=mx; b1=0; }
+      else if(60<=h && h<120){ r1=mx; g1=c; b1=0; }
+      else if(120<=h && h<180){ r1=0; g1=c; b1=mx; }
+      else if(180<=h && h<240){ r1=0; g1=mx; b1=c; }
+      else if(240<=h && h<300){ r1=mx; g1=0; b1=c; }
+      else{ r1=c; g1=0; b1=mx; }
+      
+      const rEdge = (r1+m)*255;
+      const gEdge = (g1+m)*255;
+      const bEdge = (b1+m)*255;
+      
+      currentRGB.r = 255 * (1-sat) + rEdge * sat;
+      currentRGB.g = 255 * (1-sat) + gEdge * sat;
+      currentRGB.b = 255 * (1-sat) + bEdge * sat;
+      
+      sendColor();
+    }
+
+    let isDragging = false;
+    const handleStart = (e) => { isDragging = true; handleMove(e); };
+    const handleEnd = () => { isDragging = false; };
+    const handleMove = (e) => {
+      if(!isDragging) return;
+      e.preventDefault();
+      const x = e.touches ? e.touches[0].clientX : e.clientX;
+      const y = e.touches ? e.touches[0].clientY : e.clientY;
+      updateColorFromWheel(x, y);
+    };
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('touchstart', handleStart, {passive: false});
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('touchmove', handleMove, {passive: false});
+    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('touchend', handleEnd);
+
+    brightSlider.addEventListener('input', () => {
+      document.getElementById('brightVal').innerText = brightSlider.value + '%';
+      sendColor();
+    });
+    
+    blueToggle.addEventListener('change', () => {
+      blueSlider.disabled = !blueToggle.checked;
+      blueSlider.style.opacity = blueToggle.checked ? 1 : 0.5;
+      sendColor();
+    });
+    
+    blueSlider.addEventListener('input', sendColor);
+
+    function connect() {
+      ws = new WebSocket('wss://74c3-2a02-8429-7f-aa01-bd0c-208a-6265-8b21.ngrok-free.app/');
+      ws.onopen = () => { statusDiv.innerText = 'Connected'; statusDiv.className = 'status connected'; };
+      ws.onclose = () => { statusDiv.innerText = 'Disconnected'; statusDiv.className = 'status'; setTimeout(connect, 2000); };
+    }
+    connect();
+  </script>
 </body>
 </html>

@@ -217,7 +217,7 @@
     blueSlider.addEventListener('input', sendColor);
 
     function connect() {
-      ws = new WebSocket('wss://5640-2a02-8429-7f-aa01-5ae-cfad-1f3b-317b.ngrok-free.app/');
+      ws = new WebSocket('wss://5f16-2a02-8429-7f-aa01-5ae-cfad-1f3b-317b.ngrok-free.app/');
       ws.onopen = () => { statusDiv.innerText = 'Connected'; statusDiv.className = 'status connected'; };
       ws.onclose = () => { statusDiv.innerText = 'Disconnected'; statusDiv.className = 'status'; setTimeout(connect, 2000); };
     }
@@ -225,4 +225,5 @@
   </script>
 </body>
 </html>
+
 
